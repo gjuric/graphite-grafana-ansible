@@ -1,0 +1,5 @@
+---
+graphite_admin_username: admin
+graphite_admin_password: password
+graphite_admin_email: admin@example.com
+graphite_secret_key: oisfjh08fj30jf8q0hfjqj90fr2wfjd2c34ughf4390/fhj

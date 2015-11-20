@@ -1,0 +1,19 @@
+---
+  - name: restart carbon cache
+    service: name=carbon-cache state=restarted
+
+  - name: create admin user
+    shell: >
+      /bin/echo "from django.contrib.auth.models import User; User.objects.create_superuser('{{graphite_admin_username}}', '{{graphite_admin_email}}', '{{graphite_admin_password}}')" | /usr/bin/graphite-manage shell
+
+  - name: collect static files
+    command: /usr/bin/python /usr/lib/python2.7/dist-packages/graphite/manage.py collectstatic --noinput
+
+  - name: restart uwsgi
+    service: name=uwsgi state=restarted
+
+  - name: restart nginx
+    service: name=nginx state=restarted
+
+  - name: restart grafana
+    service: name=grafana-server state=restarted

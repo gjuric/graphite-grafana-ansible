@@ -1,0 +1,28 @@
+---
+  - name: Install graphite-web
+    apt: pkg=graphite-web state=installed
+
+  - name: Set secret key
+    lineinfile: dest=/etc/graphite/local_settings.py regexp="^#?SECRET_KEY = *" line="SECRET_KEY = '{{ graphite_secret_key }}'" state=present
+
+  - name: Set Time zone
+    lineinfile: dest=/etc/graphite/local_settings.py regexp="^#?TIME_ZONE =*" line="TIME_ZONE = 'Etc/UTC'" state=present
+
+  - name: Initalise database
+    command: /usr/bin/graphite-manage syncdb --noinput creates=/var/lib/graphite/graphite.db
+    notify:
+      - create admin user
+
+  - name: Check sqlite database permissions
+    file: path=/var/lib/graphite/graphite.db owner=_graphite group=_graphite
+
+  - name: Setup static url
+    lineinfile: dest=/usr/lib/python2.7/dist-packages/graphite/app_settings.py line="STATIC_URL = '/static/'"
+
+  - name: Setup static root
+    lineinfile: dest=/usr/lib/python2.7/dist-packages/graphite/app_settings.py line="STATIC_ROOT = '/usr/share/graphite-web/static/'"
+
+  - name: Add static module to Django
+    lineinfile: dest=/usr/lib/python2.7/dist-packages/graphite/app_settings.py regexp="^  'django.contrib.staticfiles'," line="  'django.contrib.staticfiles'," insertafter="  'django.contrib.contenttypes'," state=present
+    notify:
+      - collect static files

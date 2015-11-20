@@ -1,0 +1,6 @@
+---
+  - include: carbon.yml
+  - include: graphite-web.yml
+  - include: uwsgi.yml
+  - include: nginx.yml
+  - include: grafana.yml

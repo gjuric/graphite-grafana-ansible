@@ -1,0 +1,16 @@
+---
+  - name: Install uWSGI
+    apt: pkg={{item}} state=installed
+    with_items:
+      - uwsgi
+      - uwsgi-plugin-python
+
+  - name: Setup config for uWSGI
+    template:
+      src: uwsgi.j2
+      dest: /etc/uwsgi/apps-available/graphite.ini
+
+  - name: Link graphite.ini to apps-enabled
+    action: file src=/etc/uwsgi/apps-available/graphite.ini dest=/etc/uwsgi/apps-enabled/graphite.ini state=link
+    notify:
+      - restart uwsgi

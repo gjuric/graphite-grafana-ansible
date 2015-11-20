@@ -1,0 +1,11 @@
+---
+  - name: Install graphite-carbon
+    apt: pkg=graphite-carbon state=installed
+
+  - name: Enable carbon cache
+    lineinfile: dest=/etc/default/graphite-carbon regexp="^CARBON_CACHE_ENABLED*" line="CARBON_CACHE_ENABLED=true" state=present
+    notify:
+      - restart carbon cache
+
+  - name: Start the carbon cache service
+    service: name=carbon-cache state=started enabled=yes

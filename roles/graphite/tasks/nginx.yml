@@ -1,0 +1,40 @@
+---
+  - name: Install nginx
+    apt: pkg=nginx state=installed
+
+  - name: Delete default vhost
+    file: path=/etc/nginx/sites-enabled/default state=absent
+    notify:
+      - restart nginx
+
+  - name: Setup nginx virtual host
+    template:
+      src: nginx-graphite.j2
+      dest: /etc/nginx/sites-available/graphite.conf
+    notify:
+      - restart nginx
+
+  - name: Setup nginx virtual host
+    template:
+      src: nginx-grafana.j2
+      dest: /etc/nginx/sites-available/grafana.conf
+    notify:
+      - restart nginx
+
+  - name: Install passlib
+    apt: pkg=python-passlib state=installed
+
+  - name: Create htpasswd
+    htpasswd: path=/etc/nginx/htpasswd name={{graphite_admin_username}} password={{graphite_admin_password}} owner=root group=www-data mode=0640
+    notify:
+      - restart nginx
+
+  - name: Link graphite.conf to sites-enabled
+    action: file src=/etc/nginx/sites-available/graphite.conf dest=/etc/nginx/sites-enabled/graphite.conf state=link
+    notify:
+      - restart nginx
+
+  - name: Link grafana.conf to sites-enabled
+    action: file src=/etc/nginx/sites-available/grafana.conf dest=/etc/nginx/sites-enabled/grafana.conf state=link
+    notify:
+      - restart nginx
