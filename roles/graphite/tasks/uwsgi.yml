@@ -14,3 +14,6 @@
     action: file src=/etc/uwsgi/apps-available/graphite.ini dest=/etc/uwsgi/apps-enabled/graphite.ini state=link
     notify:
       - restart uwsgi
+
+  - name: Start uWSGI service
+    service: name=uwsgi enabled=yes state=started

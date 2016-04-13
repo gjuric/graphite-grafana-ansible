@@ -1,17 +1,17 @@
 ---
-  - name: Install CA certificates
+  - name: Install CA certificates package
     apt: pkg=ca-certificates state=installed
 
   - name: Install apt-transport-https
     apt: pkg=apt-transport-https state=installed
 
-  - name: Install Grafana GPG key to apt-key
+  - name: Add packagecloud GPG key to apt-key
     apt_key: 
       id: D59097AB
       url: https://packagecloud.io/gpg.key
       state: present
 
-  - name: Add Grafana repository
+  - name: Add Grafana repository to APT
     apt_repository:
       repo: deb https://packagecloud.io/grafana/stable/debian/ jessie main
       state: present
@@ -20,7 +20,7 @@
   - name: Install Grafana
     apt: pkg=grafana state=installed
 
-  - name: Setup Grafana config file
+  - name: Setup Grafana
     template:
       src: grafana.ini.j2
       dest: /etc/grafana/grafana.ini
@@ -39,5 +39,3 @@
 
   - name: Enable Grafana service
     service: name=grafana-server enabled=yes state=started
-
-#regexp="# enable anonymous access$;?enabled = true*"

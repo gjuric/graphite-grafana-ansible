@@ -5,7 +5,7 @@
   - name: Set secret key
     lineinfile: dest=/etc/graphite/local_settings.py regexp="^#?SECRET_KEY = *" line="SECRET_KEY = '{{ graphite_secret_key }}'" state=present
 
-  - name: Set Time zone
+  - name: Set Time zone to UTC
     lineinfile: dest=/etc/graphite/local_settings.py regexp="^#?TIME_ZONE =*" line="TIME_ZONE = 'Etc/UTC'" state=present
 
   - name: Initalise database
@@ -13,7 +13,7 @@
     notify:
       - create admin user
 
-  - name: Check sqlite database permissions
+  - name: Check database permissions
     file: path=/var/lib/graphite/graphite.db owner=_graphite group=_graphite
 
   - name: Setup static url
